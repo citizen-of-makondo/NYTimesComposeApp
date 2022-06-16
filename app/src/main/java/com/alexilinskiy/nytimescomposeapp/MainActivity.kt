@@ -1,5 +1,6 @@
 package com.alexilinskiy.nytimescomposeapp
 
+import android.net.Uri
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -12,9 +13,14 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
+import com.alexilinskiy.nytimescomposeapp.model.ItemType
+import com.alexilinskiy.nytimescomposeapp.model.Result
+import com.alexilinskiy.nytimescomposeapp.presentation.details.NewsItemScreen
 import com.alexilinskiy.nytimescomposeapp.presentation.list.NewsListScreen
 import com.alexilinskiy.nytimescomposeapp.presentation.list.NewsListViewModel
 import com.alexilinskiy.nytimescomposeapp.ui.theme.NYTimesComposeAppTheme
+import com.google.gson.Gson
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -35,6 +41,7 @@ class MainActivity : ComponentActivity() {
     }
 }
 
+
 @Composable
 fun NewsApp() {
     val navController = rememberNavController()
@@ -42,19 +49,23 @@ fun NewsApp() {
     val newsList = viewModel.news.value
     NavHost(navController = navController, startDestination = "newsList") {
         composable(route = "newsList") {
-            NewsListScreen({ newsItem ->
-                navController.navigate("newsList/$newsItem")
-            }, newsList)
+            NewsListScreen(
+                onItemCLick = { newsItem ->
+                    val json = Uri.encode(Gson().toJson(newsItem))
+                    navController.navigate("newsList/$json")
+                },
+                newsList = newsList
+            )
         }
 
-       /* composable(
+        composable(
             route = "newsList/{newsItem}",
             arguments = listOf(navArgument("newsItem") {
-                type = ResultType()
+                type = ItemType()
             })
         ) { navBackStackEntry ->
             val item = navBackStackEntry.arguments?.getParcelable<Result>("newsItem")
-            NewsItemScreen()
-        }*/
+            NewsItemScreen(item!!)
+        }
     }
 }

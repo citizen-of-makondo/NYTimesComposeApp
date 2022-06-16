@@ -1,5 +1,9 @@
 package com.alexilinskiy.nytimescomposeapp.model
 
+import android.os.Parcelable
+import kotlinx.parcelize.Parcelize
+
+@Parcelize
 data class Multimedia(
     val caption: String,
     val copyright: String,
@@ -9,4 +13,4 @@ data class Multimedia(
     val type: String,
     val url: String,
     val width: Int
-)
+): Parcelable
