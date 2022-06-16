@@ -6,4 +6,6 @@ interface NewsRepository {
 
     suspend fun getDefaultNews(): NewsResult
 
+    suspend fun getSectionNews(section: String): NewsResult
+
 }

@@ -1,0 +1,30 @@
+package com.alexilinskiy.nytimescomposeapp.model
+
+enum class Section(val showName: String, val requestName: String) {
+    ARTS("Arts", "arts"),
+    AUTO("Automobiles", "automobiles"),
+    BOOKS("Books", "books"),
+    BUSINESS("Business", "business"),
+    FASHION("Fashion", "fashion"),
+    FOOD("Food", "food"),
+    HEALTH("Health", "health"),
+    HOME("Home", "home"),
+    INSIDER("Insider", "insider"),
+    MAGAZINE("Magazine", "magazine"),
+    MOVIES("Movies", "movies"),
+    NYREGION("NYregion", "nyregion"),
+    OBITUARIES("Obituaries", "obituaries"),
+    OPINION("Opinion", "opinion"),
+    POLITICS("Politics", "politics"),
+    REALESTATE("Real estate", "realestate"),
+    SCIENCE("Science", "science"),
+    SPORTS("Sports", "sports"),
+    SUNDAYREVIEW("Sunday review", "sundayreview"),
+    TECHNOLOGY("Technology", "technology"),
+    THEATER("Theater", "theater"),
+    T_MAGAZINE("T-magazine", "t-magazine"),
+    TRAVEL("Travel", "travel"),
+    UPSHOT("Upshot", "upshot"),
+    US("US", "us"),
+    WORLD("World", "world");
+}

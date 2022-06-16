@@ -12,4 +12,6 @@ class NewsRepositoryImpl @Inject constructor(
     }
 
     override suspend fun getDefaultNews(): NewsResult = newsApi.getWorldNews(apiKey)
+
+    override suspend fun getSectionNews(section: String): NewsResult = newsApi.getSectionNews(section, apiKey)
 }

@@ -54,7 +54,10 @@ fun NewsApp() {
                     val json = Uri.encode(Gson().toJson(newsItem))
                     navController.navigate("newsList/$json")
                 },
-                newsList = newsList
+                newsList = newsList,
+                onItemDrawerClick = { section ->
+                    viewModel.getSectionNews(section)
+                }
             )
         }
 
