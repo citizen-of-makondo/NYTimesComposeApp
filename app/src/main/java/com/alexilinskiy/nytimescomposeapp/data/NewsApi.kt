@@ -1,17 +1,14 @@
 package com.alexilinskiy.nytimescomposeapp.data
 
-import com.alexilinskiy.nytimescomposeapp.model.NewsList
-import retrofit2.Response
+import com.alexilinskiy.nytimescomposeapp.model.NewsResult
 import retrofit2.http.GET
 import retrofit2.http.Query
 
 interface NewsApi {
 
-    @GET("1/news")
+    @GET("home.json")
     suspend fun getWorldNews(
-        @Query("apikey") apiKey: String,
-        @Query("category") category: String,
-        @Query("page") page: Int
-    ): NewsList
+        @Query("api-key") apiKey: String
+    ): NewsResult
 
 }

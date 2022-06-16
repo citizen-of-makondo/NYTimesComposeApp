@@ -12,9 +12,6 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import androidx.paging.compose.LazyPagingItems
-import androidx.paging.compose.collectAsLazyPagingItems
-import com.alexilinskiy.nytimescomposeapp.model.Result
 import com.alexilinskiy.nytimescomposeapp.presentation.list.NewsListScreen
 import com.alexilinskiy.nytimescomposeapp.presentation.list.NewsListViewModel
 import com.alexilinskiy.nytimescomposeapp.ui.theme.NYTimesComposeAppTheme
@@ -42,14 +39,12 @@ class MainActivity : ComponentActivity() {
 fun NewsApp() {
     val navController = rememberNavController()
     val viewModel: NewsListViewModel = hiltViewModel()
-    val newsList = viewModel.newsList
-    val lazyPagingItems: LazyPagingItems<Result> =
-        newsList.collectAsLazyPagingItems()
+    val newsList = viewModel.news.value
     NavHost(navController = navController, startDestination = "newsList") {
         composable(route = "newsList") {
             NewsListScreen({ newsItem ->
                 navController.navigate("newsList/$newsItem")
-            }, lazyPagingItems)
+            }, newsList)
         }
 
        /* composable(

@@ -1,23 +1,29 @@
 package com.alexilinskiy.nytimescomposeapp.presentation.list
 
+import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
-import androidx.paging.Pager
-import androidx.paging.PagingConfig
-import androidx.paging.PagingData
-import com.alexilinskiy.nytimescomposeapp.domain.PagingSource
+import androidx.lifecycle.viewModelScope
+import com.alexilinskiy.nytimescomposeapp.data.NewsRepository
 import com.alexilinskiy.nytimescomposeapp.model.Result
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.filter
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class NewsListViewModel @Inject constructor(
-    private val pagingSource: PagingSource,
+    private val repository: NewsRepository
 ) : ViewModel() {
+    var news = mutableStateOf(emptyList<Result>())
 
-    val newsList: Flow<PagingData<Result>> = Pager(
-        config = PagingConfig(pageSize = 10),
-        pagingSourceFactory = { pagingSource }).flow
+    init {
+        getNews()
+    }
 
+    private fun getNews() {
+        viewModelScope.launch {
+            news.value = repository.getDefaultNews().results
+        }
+
+    }
 }

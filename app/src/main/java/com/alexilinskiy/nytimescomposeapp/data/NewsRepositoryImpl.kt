@@ -1,22 +1,15 @@
 package com.alexilinskiy.nytimescomposeapp.data
 
-import com.alexilinskiy.nytimescomposeapp.model.NewsList
+import com.alexilinskiy.nytimescomposeapp.model.NewsResult
 import javax.inject.Inject
 
 class NewsRepositoryImpl @Inject constructor(
     private val newsApi: NewsApi
 ) : NewsRepository {
 
-    private val apiKey = "pub_604275edaeddb976cff3d9d408659367c250"
-
-    private val WORLD_CATEGORY = "world"
-
-    override suspend fun getWorldNews(page: Int): NewsList {
-        val data = newsApi.getWorldNews(
-            apiKey = apiKey,
-            category = WORLD_CATEGORY,
-            page = page
-        )
-        return data.copy(results = data.results.filter { it.language == "english" })
+    companion object {
+        const val apiKey = "QhB0E7H0o640FOKQNVd7IdgDCuu4n9Dn"
     }
+
+    override suspend fun getDefaultNews(): NewsResult = newsApi.getWorldNews(apiKey)
 }

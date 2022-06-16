@@ -3,8 +3,6 @@ package com.alexilinskiy.nytimescomposeapp.di
 import com.alexilinskiy.nytimescomposeapp.data.NewsApi
 import com.alexilinskiy.nytimescomposeapp.data.NewsRepository
 import com.alexilinskiy.nytimescomposeapp.data.NewsRepositoryImpl
-import com.alexilinskiy.nytimescomposeapp.domain.PagingSource
-import dagger.Binds
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -22,19 +20,13 @@ object NewsModule {
     fun provideRetrofit(): Retrofit {
         return Retrofit.Builder()
             .addConverterFactory(GsonConverterFactory.create())
-            .baseUrl("https://newsdata.io/api/")
+            .baseUrl("https://api.nytimes.com/svc/topstories/v2/")
             .build()
     }
 
     @Provides
     fun provideRetrofitApi(retrofit: Retrofit): NewsApi {
         return retrofit.create(NewsApi::class.java)
-    }
-
-    @Singleton
-    @Provides
-    fun providePagingSource(repository: NewsRepository): PagingSource {
-        return PagingSource(repository)
     }
 
     @Singleton

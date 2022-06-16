@@ -1,9 +1,9 @@
 package com.alexilinskiy.nytimescomposeapp.data
 
-import com.alexilinskiy.nytimescomposeapp.model.NewsList
+import com.alexilinskiy.nytimescomposeapp.model.NewsResult
 
 interface NewsRepository {
 
-    suspend fun getWorldNews(page: Int): NewsList
+    suspend fun getDefaultNews(): NewsResult
 
 }
