@@ -6,12 +6,21 @@ import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
-import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
+import androidx.paging.compose.LazyPagingItems
+import androidx.paging.compose.collectAsLazyPagingItems
+import com.alexilinskiy.nytimescomposeapp.model.Result
+import com.alexilinskiy.nytimescomposeapp.presentation.list.NewsListScreen
+import com.alexilinskiy.nytimescomposeapp.presentation.list.NewsListViewModel
 import com.alexilinskiy.nytimescomposeapp.ui.theme.NYTimesComposeAppTheme
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -22,7 +31,7 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colors.background
                 ) {
-                    Greeting("Android")
+                    NewsApp()
                 }
             }
         }
@@ -30,14 +39,27 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-fun Greeting(name: String) {
-    Text(text = "Hello $name!")
-}
+fun NewsApp() {
+    val navController = rememberNavController()
+    val viewModel: NewsListViewModel = hiltViewModel()
+    val newsList = viewModel.newsList
+    val lazyPagingItems: LazyPagingItems<Result> =
+        newsList.collectAsLazyPagingItems()
+    NavHost(navController = navController, startDestination = "newsList") {
+        composable(route = "newsList") {
+            NewsListScreen({ newsItem ->
+                navController.navigate("newsList/$newsItem")
+            }, lazyPagingItems)
+        }
 
-@Preview(showBackground = true)
-@Composable
-fun DefaultPreview() {
-    NYTimesComposeAppTheme {
-        Greeting("Android")
+       /* composable(
+            route = "newsList/{newsItem}",
+            arguments = listOf(navArgument("newsItem") {
+                type = ResultType()
+            })
+        ) { navBackStackEntry ->
+            val item = navBackStackEntry.arguments?.getParcelable<Result>("newsItem")
+            NewsItemScreen()
+        }*/
     }
 }
