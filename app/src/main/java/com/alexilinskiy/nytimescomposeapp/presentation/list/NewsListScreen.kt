@@ -60,13 +60,6 @@ fun NewsListScreen(
                     text = "Top stories from New York Times",
                     color = Color.Black
                 )
-                Spacer(modifier = Modifier.weight(1f))
-                IconButton(onClick = {}) {
-                    Icon(
-                        imageVector = Icons.Filled.Favorite,
-                        contentDescription = "Favorite News"
-                    )
-                }
             }
         },
         content = {
