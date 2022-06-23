@@ -1,9 +1,11 @@
 package com.alexilinskiy.nytimescomposeapp.presentation.list
 
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Favorite
@@ -15,17 +17,18 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.alexilinskiy.nytimescomposeapp.model.Result
 import com.alexilinskiy.nytimescomposeapp.model.Section
+import com.alexilinskiy.nytimescomposeapp.model.SectionList
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.request.RequestOptions
-import com.skydoves.landscapist.ShimmerParams
 import com.skydoves.landscapist.glide.GlideImage
 import kotlinx.coroutines.launch
 
 @Composable
 fun NewsListScreen(
-    onItemDrawerClick: (String) -> Unit,
+    onItemDrawerClick: (Section) -> Unit,
     onItemCLick: (Result) -> Unit,
     newsList: List<Result>
 ) {
@@ -35,12 +38,14 @@ fun NewsListScreen(
     Scaffold(
         scaffoldState = scaffoldState,
         drawerContent = {
-            Section.values().forEach {
-                DrawerItem(it, onItemDrawerClick)
+            LazyColumn {
+                items(SectionList.sections) {
+                    DrawerItem(it, onItemDrawerClick)
+                }
             }
         },
         topBar = {
-            TopAppBar {
+            TopAppBar(backgroundColor = Color.Gray.copy(alpha = 0.5f)) {
                 IconButton(onClick = {
                     scope.launch {
                         scaffoldState.drawerState.open()
@@ -51,7 +56,10 @@ fun NewsListScreen(
                         contentDescription = "Menu"
                     )
                 }
-                Text(text = "Top stories from New York Times")
+                Text(
+                    text = "Top stories from New York Times",
+                    color = Color.Black
+                )
                 Spacer(modifier = Modifier.weight(1f))
                 IconButton(onClick = {}) {
                     Icon(
@@ -68,15 +76,29 @@ fun NewsListScreen(
 }
 
 @Composable
-fun DrawerItem(name: Section, onItemDrawerClick: (section: String) -> Unit) {
-    Text(text = name.showName, modifier = Modifier.clickable { onItemDrawerClick(name.requestName) })
+fun DrawerItem(sectionItem: Section, onItemDrawerClick: (section: Section) -> Unit) {
+    val color = if (sectionItem.isChecked) Color.Blue else Color.Black
+    Box(
+        modifier = Modifier
+            .clickable { onItemDrawerClick(sectionItem) }
+            .padding(horizontal = 10.dp, vertical = 8.dp)
+            .fillMaxWidth()
+    ) {
+        Text(
+            text = sectionItem.showName,
+            fontSize = 16.sp,
+            color = color
+        )
+    }
 }
 
 @Composable
 fun NewsList(newsList: List<Result>, onItemCLick: (Result) -> Unit) {
-    LazyColumn(contentPadding = PaddingValues(8.dp)) {
+    LazyColumn {
         items(newsList) { newsItem ->
-            NewsItem(newsItem, onItemCLick)
+            if (newsItem.title.isNotEmpty()) {
+                NewsItem(newsItem, onItemCLick)
+            }
         }
     }
 }
@@ -85,31 +107,41 @@ fun NewsList(newsList: List<Result>, onItemCLick: (Result) -> Unit) {
 fun NewsItem(newsItem: Result, onItemCLick: (Result) -> Unit) {
     Row(
         modifier = Modifier
+            .padding(8.dp)
             .fillMaxWidth()
+            .border(width = 2.dp, color = Color.Gray, shape = RoundedCornerShape(4.dp))
             .clickable { onItemCLick(newsItem) },
         verticalAlignment = Alignment.CenterVertically
     ) {
         GlideImage(
-            imageModel = newsItem.multimedia.first().url,
+            imageModel = newsItem.multimedia?.last()?.url,
             contentScale = ContentScale.Fit,
             modifier = Modifier
                 .weight(0.2f)
-                .padding(8.dp)
-                .size(50.dp),
+                .padding(start = 4.dp)
+                .size(80.dp),
             requestOptions = {
                 RequestOptions()
-                    .diskCacheStrategy(DiskCacheStrategy.ALL)
+                    .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
                     .centerCrop()
             },
             alignment = Alignment.Center,
             failure = {
-                Text(text = "no image")
+                Column(
+                    verticalArrangement = Arrangement.Center,
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                ) {
+                    Text(
+                        text = "no image",
+                        modifier = Modifier.fillMaxSize()
+                    )
+                }
             }
         )
         Column(
             modifier = Modifier
                 .weight(0.8f)
-                .padding(start = 8.dp)
+                .padding(horizontal = 4.dp)
         ) {
             Text(
                 text = newsItem.title
